@@ -2,36 +2,68 @@
 <html>
 <head>
   <title>To-Do List</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="box">
-  <h1>To-Do List</h1>
+    <h1>To-Do List</h1>
   </div>
   <div class="box">
-    <% for(var i=0 ;i<dayej.length ;i++){ %>
-      <form action="/deleted" method ="POST">
-      <div class="Item">        
-        <input type="checkbox" name="checkbox" value="<%= dayej[i]._id %>" onchange="this.form.submit()">
-      <p><%= dayej[i].name%></p>
-      </form>
+    <% for (var i = 0; i < dayej.length; i++) { %>
+      <div class="Item">
+     <!-- Delete by checkbox -->
+        <form action="/deleted" method="POST" style="display:inline;">
+          <input type="checkbox" name="checkbox" value="<%= dayej[i]._id %>" onchange="this.form.submit()">
+        </form>
 
-      <form action="/deleted" method="POST" style="display:inline;">
-        <input type="hidden" name="id" value="<%= dayej[i]._id %>">
-        <input type="submit" value="Delete">
-    
-      </div>
-      </form>
-      
-      <form action="/edit" method="POST">
-    <input type="text" name="updatedText">
-    <input type="hidden" name="id" value="<%= dayej[i]._id %>">
-    <button type="submit">Edit</button>
-</form>
+        <!-- Show name -->
+        <p style="display:inline;"><%= dayej[i].name %></p>
 
-     <%  }%>
-  <form action="/" method="post">
-    <input type="text" name="newItem" placeholder="Enter new Item" required >
+        <!-- Delete by button -->
+        <button onclick="deleteItem('<%= dayej[i]._id %>')">Delete</button>
+
+
+         <div>
+  
+
+
+        <!-- Edit form -->
+        <form action="/edit" method="POST" style="margin-top: 5px;">
+      <input type="text" name="updatedText" value="<%= dayej[i].name %>" required>
+      <input type="hidden" name="id" value="<%= dayej[i]._id %>">
+      <button type="submit">Edit</button>
+    </form>
+  </div>
+    <% } %>
+  </div>
+
+  <!-- Add new item -->
+  <form action="/" method="POST">
+    <input type="text" name="newItem" placeholder="Enter new item" required>
     <button type="submit">Add</button>
   </form>
+  <script>
+  function deleteItem(id) {
+    fetch(`/delete/${id}`, {
+      method: "DELETE"
+    }).then(() => {
+      window.location.reload();
+    });
+  }
+
+    function editItem(id) {
+    const updatedText = document.getElementById(`edit-${id}`).value;
+    fetch("/edit", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ id, updatedText })
+    }).then(() => {
+      window.location.reload();
+    });
+  }
+</script>
+
 </body>
 </html>

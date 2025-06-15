@@ -33,78 +33,36 @@ app.post("/", function (req, res) {
   todo4.save();
   res.redirect("/");
 });
-app.post("/deleted", async function (req, res) {
-  const checkedItemId = req.body.checkbox;
-  try {
-    await Item.findByIdAndDelete(checkedItemId);
-    console.log("Item Deleted Successfully");
-    res.redirect("/");
-  } catch (err) {
-    console.log(err);
-    res.redirect("/");
-  }
-});
-// Delete item by ID
-app.post("/delete", async (req, res) => {
-  const id = req.body.checkbox;
-  try {
-    await Item.findByIdAndDelete(id);
-    console.log("Item deleted successfully");
-  } catch (err) {
-    console.log(err);
-  }
+
+
+
+app.post("/add", async (req, res) => {
+  await Item.create({ name: req.body.name });
   res.redirect("/");
+});
+
+
+// POST FOR EDIT
+app.post("/edit", async (req, res) => {
+  try {
+    await Item.findByIdAndUpdate(req.body.id, { name: req.body.updatedText });
+    res.redirect("/");
+  } catch (err) {
+    console.error(err);
+    res.redirect("/");
+  }
 });
 
 // DELETE route
-app.post("/delete", async (req, res) => {
-  const id = req.body.id;
+app.delete("/delete/:id", async (req, res) => {
   try {
-    await Item.findByIdAndDelete(id);
-    console.log("Item deleted successfully");
+    await Item.findByIdAndDelete(req.params.id);
+    res.sendStatus(200);
   } catch (err) {
-    console.log(err);
+    console.error(err);
+    res.sendStatus(500);
   }
-  res.redirect("/");
 });
-
-// EDIT route
-app.post("/edit", async (req, res) => {
-  const { id, updatedText } = req.body;
-  try {
-    await Item.findByIdAndUpdate(id, { name: updatedText });
-    console.log("Item updated successfully");
-  } catch (err) {
-    console.log(err);
-  }
-  res.redirect("/");
-});
- //DELETE route
-app.post("/delete", async (req, res) => {
-  const id = req.body.id;
-  try {
-    await Item.findByIdAndDelete(id);
-    console.log("Item deleted successfully");
-  } catch (err) {
-    console.log(err);
-  }
-  res.redirect("/");
-});
-app.post("/deleted", async (req, res) => {
-    const id = req.body.id;
-    await todos.findByIdAndDelete(id);
-    console.log("Item Deleted Successfully");
-    res.redirect("/");
-});
-
-
-
-
-
-
-
-
-
 
 
 
